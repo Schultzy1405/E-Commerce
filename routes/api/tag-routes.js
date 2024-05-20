@@ -8,11 +8,12 @@ router.get('/', async (req, res) => {
   // be sure to include its associated Product data
   try {
     const tagData = await Tag.findAll({
-      include: [{ model: Product }]
+      include: [{ model: Product }],
     })
     res.status(200).json(tagData)
   } catch (err) {
-    res.status(500).json(err)
+    console.log(err)
+    res.status(500).json({err: 'internal Server Error'})
   }
 });
 
@@ -45,9 +46,8 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   // update a tag's name by its `id` value
   try {
-    const tagData = await Tag.findByIdAndUpdate(req.params.id, 
-      { name: req.body.name },
-      { new: true });
+    const tagData = await Tag.update(req.body, 
+      { where: {id: req.params.id },});
     res.json(tagData);
   } catch (err) {
     res.status(400).json(err);
